@@ -4,6 +4,17 @@ const router = express.Router();
 const Student = require('../models/Student');
 const { check, validationResult } = require('express-validator');
 
+router.post('/',(req , res , next)=>{
+    const user={
+        username : 'tanya',
+        email : 'tanya1999agar@gmail.com'
+    }
+  jwt.sign({user : user} , 'secretkey' , (err , token)=>{
+      console.log('user verified');
+  })
+  next();
+})
+
 router.post('/', [
     check('email').isEmail().withMessage('ENTER A VALID EMAIL !')
         .custom(value => {
@@ -36,15 +47,7 @@ router.post('/', [
     check('branch').isLength({ min: 1 }).withMessage('Issue in branch'),
     check('name').isLength({ min: 1 }).withMessage('Issue in name')
   ], verifytoken,(req, res) => {
-      const user={
-          username : 'tanya',
-          email : 'tanya1999agar@gmail.com'
-      }
-    jwt.sign({user : user} , 'secretkey' , (err , token)=>{
-        res.json({
-            token
-        });
-    })
+      
     jwt.verify(req.token, 'secretkey' , (err , authdata)=>{
         if(err){
             return res.sendStatus(403);
