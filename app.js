@@ -2,11 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const  {getSecret}  = require('./config.js');
 const router = require('./routes/router.js');
 
 
-mongoose.connect(getSecret('dbUri'),{ useNewUrlParser: true}
+mongoose.connect(mongodb+srv://<username>:<password>@cluster1-sejkn.mongodb.net/test?retryWrites=true&w=majority,{ useNewUrlParser: true}
   )
   .then(
     () => {
