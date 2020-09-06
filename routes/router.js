@@ -2,20 +2,39 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const Student = require('../models/Student');
+const User = require('../models/User');
 const { check, validationResult } = require('express-validator');
 
-router.post('/',(req , res , next)=>{
-    const user={
-        username : 'tanya',
-        email : 'tanya1999agar@gmail.com'
+router.post('/admin',(req , res , next)=>{
+    const { username, password } = req.body;
+    User.findOne({ username: req.body.username })
+    .then(user=>{
+    if(user.username === username && user.password === password)
+    {
+        jwt.sign({ user: user }, 'secretkey', { expiresIn: '1h' }, (err, token) => {
+                    if (err) {
+                        console.log(`some err occured ${err}`);
+                    } else {
+                        res.send(
+                            {
+                                token: token
+                            });
+                    }
+                })
     }
-  jwt.sign({user : user} , 'secretkey' , (err , token)=>{
-      console.log('user verified');
-  })
-  next();
+        else{
+            res.json({ token: "failed" });
+        }
+    })
+   .catch(err => {
+            console.log(err)
+            console.log(``)
+            console.log(`some err occured at /auth ${err}`);
+            res.json({ data: "failed" });
+        })
 })
 
-router.post('/', [
+router.post('/register', [
     check('email').isEmail().withMessage('ENTER A VALID EMAIL !')
         .custom(value => {
         return Student.findOne({email : value})
@@ -104,7 +123,7 @@ router.post('/', [
   }
 
 
-  router.get('/', (req , res , next) =>{
+  router.get('/register', (req , res , next) =>{
     Student.find()
     .then(students => {
         res.status(200).json(students);
