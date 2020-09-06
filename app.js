@@ -10,6 +10,10 @@ mongoose.connect(mongodb+srv://<username>:<password>@cluster1-sejkn.mongodb.net/
   .then(
     () => {
       console.log('Connected to mongoDB');
+      app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+});
+
     },
     (err) => console.log('Error connecting to mongoDB', err)
   );
@@ -23,7 +27,4 @@ app.use(express.json());
 
 app.use(router);
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
 
